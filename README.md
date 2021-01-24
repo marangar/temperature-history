@@ -26,6 +26,12 @@ STATION_ID=160800-99999 data/update_data.py
 ```
 ## plot graphs
 
+show average temperature history for different seasons:
 ```
 STATION_ID=160800-99999 ./generate_graphs.py
+```
+
+show history of temperature-swing index for different seasons:
+```
+PLOT_VAR=y STATION_ID=160800-99999 ./generate_graphs.py
 ```
