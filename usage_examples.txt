@@ -1,0 +1,39 @@
+source venv/bin/activate
+
+# MILANO-LINATE
+STATION_ID=160800-99999 data/update_data.py
+# ROMA-CIAMPINO
+STATION_ID=162390-99999 data/update_data.py
+# CATANIA
+STATION_ID=164600-99999 data/update_data.py
+# MONACO BAVIERA
+STATION_ID=108660-99999 data/update_data.py
+# PARIGI-ORLY
+STATION_ID=071490-99999 data/update_data.py
+# LONDRA-HEATROW
+STATION_ID=037720-99999 data/update_data.py
+# CHICAGO
+STATION_ID=725300-94846 data/update_data.py
+# BALTIMORA
+STATION_ID=724060-93721 data/update_data.py
+# ATLANTIC-CITY
+STATION_ID=724070-93730 data/update_data.py
+
+# MILANO-LINATE
+STATION_ID=160800-99999 ./generate_graphs.py
+# ROMA-CIAMPINO
+STATION_ID=162390-99999 ./generate_graphs.py
+# CATANIA
+STATION_ID=164600-99999 ./generate_graphs.py
+# MONACO BAVIERA
+STATION_ID=108660-99999 ./generate_graphs.py
+# PARIGI-ORLY
+STATION_ID=071490-99999 ./generate_graphs.py
+# LONDRA-HEATROW
+STATION_ID=037720-99999 ./generate_graphs.py
+# CHICAGO
+STATION_ID=725300-94846 ./generate_graphs.py
+# BALTIMORA
+STATION_ID=724060-93721 ./generate_graphs.py
+# ATLANTIC-CITY
+STATION_ID=724070-93730 ./generate_graphs.py
