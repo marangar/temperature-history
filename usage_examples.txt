@@ -6,11 +6,11 @@ STATION_ID=160800-99999 data/update_data.py
 STATION_ID=162390-99999 data/update_data.py
 # CATANIA
 STATION_ID=164600-99999 data/update_data.py
-# MONACO BAVIERA
+# MUNCHEN
 STATION_ID=108660-99999 data/update_data.py
-# PARIGI-ORLY
+# PARIS-ORLY
 STATION_ID=071490-99999 data/update_data.py
-# LONDRA-HEATROW
+# LONDON-HEATROW
 STATION_ID=037720-99999 data/update_data.py
 # CHICAGO
 STATION_ID=725300-94846 data/update_data.py
@@ -25,11 +25,11 @@ STATION_ID=160800-99999 ./generate_graphs.py
 STATION_ID=162390-99999 ./generate_graphs.py
 # CATANIA
 STATION_ID=164600-99999 ./generate_graphs.py
-# MONACO BAVIERA
+# MUNCHEN
 STATION_ID=108660-99999 ./generate_graphs.py
-# PARIGI-ORLY
+# PARIS-ORLY
 STATION_ID=071490-99999 ./generate_graphs.py
-# LONDRA-HEATROW
+# LONDON-HEATROW
 STATION_ID=037720-99999 ./generate_graphs.py
 # CHICAGO
 STATION_ID=725300-94846 ./generate_graphs.py

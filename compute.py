@@ -1,5 +1,13 @@
 import numpy as np
 
+def swing(temps):
+    days = len(temps)
+    if days == 0:
+        return np.nan
+    spectrum = np.abs(np.fft.rfft(temps))
+    freq = np.fft.rfftfreq(days)
+    return np.average(freq, weights=spectrum)
+
 def smooth(x, window_len=11, window='hanning'):
     """smooth the data using a window with requested size.
 
@@ -48,7 +56,7 @@ def smooth(x, window_len=11, window='hanning'):
     if window == 'flat': #moving average
         w=np.ones(window_len,'d')
     else:
-        w=eval('np.'+window+'(window_len)')
+        w=eval('np.'+window+'(window_len)') #pylint: disable=eval-used
 
     y=np.convolve(w/w.sum(),s,mode='valid')
     left_off = int((window_len - 1) / 2)

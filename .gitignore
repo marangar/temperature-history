@@ -3,3 +3,4 @@ old/
 venv
 venv3
 data/*.full
+.token
