@@ -1,5 +1,13 @@
 from __future__ import absolute_import
 import numpy as np
+from utils import f2c, valid_elements, replace_nan
+
+def compute_season_value(compute_func, season_temps):
+    return np.array([compute_func(f2c(valid_elements(temps)))
+                     for temps in season_temps])
+
+def moving_average(cmpt_values, maw_len):
+    return smooth(replace_nan(cmpt_values), maw_len, 'flat')
 
 def swing(temps):
     days = len(temps)

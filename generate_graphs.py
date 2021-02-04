@@ -4,12 +4,12 @@ from __future__ import absolute_import
 from __future__ import print_function
 import os
 import numpy as np
-import pandas
 from subprocess import check_output
 from six.moves import range
-from utils import f2c, replace_nan, valid_elements, date_prefixes
+from utils import date_prefixes
 from plotting import plot_season_avg, plot_season_swing
-from compute import smooth, swing
+from compute import swing, compute_season_value, moving_average
+from db import get_data_frame, get_t_min_max, get_years
 
 PLOT_VAR = os.getenv('PLOT_VAR')
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -21,70 +21,42 @@ DATA_FILE = os.path.join(ROOT_DIR, 'data', STATION_ID + '.full')
 MAW_LEN = 5 # moving average window length
 
 if __name__ == "__main__":
-    # parse data file
-    df = pandas.read_csv(filepath_or_buffer=DATA_FILE,
-                         delim_whitespace=True, header=None,
-                         names=['STN---', 'WBAN', 'YEARMODA', 'TEMP',
-                                'TEMP_CNT', 'DEWP', 'DWEP_CNT', 'SLP',
-                                'SLP_CNT', 'STP', 'STP_CNT', 'VISIB',
-                                'VISIB_CNT', 'WDSP', 'WDSP_CNT', 'MXSPD',
-                                'GUST', 'MAX', 'MIN', 'PRCP', 'SNDP', 'FRSHTT'])
+    # read data-frame
+    df = get_data_frame(DATA_FILE)
 
     # determine oldest and latest years in data file
-    start_year = int(df['YEARMODA'].values[1][:4])
-    end_year = int(df['YEARMODA'].values[-1][:4])
+    start_year, end_year = get_years(df)
     years = list(range(start_year, end_year + 1))
 
     # for every season, build date prefixes
     spring_pref, summer_pref, autumn_pref, winter_pref = date_prefixes(df, years)
 
-    # for every season, build list of pandas-series -> one serie for every year
-    match_criterion = df['YEARMODA'].str.startswith
-    spring_tmins = [df.loc[match_criterion(spring_pref[y])]['MIN']
-                    for y in years]
-    spring_tmaxs = [df.loc[match_criterion(spring_pref[y])]['MAX']
-                    for y in years]
-    summer_tmins = [df.loc[match_criterion(summer_pref[y])]['MIN']
-                    for y in years]
-    summer_tmaxs = [df.loc[match_criterion(summer_pref[y])]['MAX']
-                    for y in years]
-    autumn_tmins = [df.loc[match_criterion(autumn_pref[y])]['MIN']
-                    for y in years]
-    autumn_tmaxs = [df.loc[match_criterion(autumn_pref[y])]['MAX']
-                    for y in years]
-    winter_tmins = [df.loc[match_criterion(winter_pref[y])]['MIN']
-                    for y in years]
-    winter_tmaxs = [df.loc[match_criterion(winter_pref[y])]['MAX']
-                    for y in years]
+    # for every season, get pandas-series of min and max temps
+    spring_tmins, spring_tmaxs = get_t_min_max(df, years, spring_pref)
+    summer_tmins, summer_tmaxs = get_t_min_max(df, years, summer_pref)
+    autumn_tmins, autumn_tmaxs = get_t_min_max(df, years, autumn_pref)
+    winter_tmins, winter_tmaxs = get_t_min_max(df, years, winter_pref)
 
     # compute value for every serie -> one value for every year
     compute_func = swing if PLOT_VAR else np.mean
-    spring_avg_mins = np.array([compute_func(f2c(valid_elements(temps)))
-                                for temps in spring_tmins])
-    summer_avg_mins = np.array([compute_func(f2c(valid_elements(temps)))
-                                for temps in summer_tmins])
-    autumn_avg_mins = np.array([compute_func(f2c(valid_elements(temps)))
-                                for temps in autumn_tmins])
-    winter_avg_mins = np.array([compute_func(f2c(valid_elements(temps)))
-                                for temps in winter_tmins])
-    spring_avg_maxs = np.array([compute_func(f2c(valid_elements(temps)))
-                                for temps in spring_tmaxs])
-    summer_avg_maxs = np.array([compute_func(f2c(valid_elements(temps)))
-                                for temps in summer_tmaxs])
-    autumn_avg_maxs = np.array([compute_func(f2c(valid_elements(temps)))
-                                for temps in autumn_tmaxs])
-    winter_avg_maxs = np.array([compute_func(f2c(valid_elements(temps)))
-                                for temps in winter_tmaxs])
+    spring_cmpt_mins = compute_season_value(compute_func, spring_tmins)
+    summer_cmpt_mins = compute_season_value(compute_func, summer_tmins)
+    autumn_cmpt_mins = compute_season_value(compute_func, autumn_tmins)
+    winter_cmpt_mins = compute_season_value(compute_func, winter_tmins)
+    spring_cmpt_maxs = compute_season_value(compute_func, spring_tmaxs)
+    summer_cmpt_maxs = compute_season_value(compute_func, summer_tmaxs)
+    autumn_cmpt_maxs = compute_season_value(compute_func, autumn_tmaxs)
+    winter_cmpt_maxs = compute_season_value(compute_func, winter_tmaxs)
 
     # calculate moving-average of previous arrays
-    spring_mavg_mins = smooth(replace_nan(spring_avg_mins), MAW_LEN, 'flat')
-    summer_mavg_mins = smooth(replace_nan(summer_avg_mins), MAW_LEN, 'flat')
-    autumn_mavg_mins = smooth(replace_nan(autumn_avg_mins), MAW_LEN, 'flat')
-    winter_mavg_mins = smooth(replace_nan(winter_avg_mins), MAW_LEN, 'flat')
-    spring_mavg_maxs = smooth(replace_nan(spring_avg_maxs), MAW_LEN, 'flat')
-    summer_mavg_maxs = smooth(replace_nan(summer_avg_maxs), MAW_LEN, 'flat')
-    autumn_mavg_maxs = smooth(replace_nan(autumn_avg_maxs), MAW_LEN, 'flat')
-    winter_mavg_maxs = smooth(replace_nan(winter_avg_maxs), MAW_LEN, 'flat')
+    spring_mavg_mins = moving_average(spring_cmpt_mins, MAW_LEN)
+    summer_mavg_mins = moving_average(summer_cmpt_mins, MAW_LEN)
+    autumn_mavg_mins = moving_average(autumn_cmpt_mins, MAW_LEN)
+    winter_mavg_mins = moving_average(winter_cmpt_mins, MAW_LEN)
+    spring_mavg_maxs = moving_average(spring_cmpt_maxs, MAW_LEN)
+    summer_mavg_maxs = moving_average(summer_cmpt_maxs, MAW_LEN)
+    autumn_mavg_maxs = moving_average(autumn_cmpt_maxs, MAW_LEN)
+    winter_mavg_maxs = moving_average(winter_cmpt_maxs, MAW_LEN)
 
     # build x-axis labels
     spring_xticks = ['%02d' % (i % 100) for i in years]
@@ -94,11 +66,11 @@ if __name__ == "__main__":
 
     # plot
     plot_func = plot_season_swing if PLOT_VAR else plot_season_avg
-    plot_func(years, 'Mar-May', STATION_NAME, spring_xticks, spring_avg_mins,
-              spring_avg_maxs, spring_mavg_mins, spring_mavg_maxs)
-    plot_func(years, 'Jun-Aug', STATION_NAME, summer_xticks, summer_avg_mins,
-              summer_avg_maxs, summer_mavg_mins, summer_mavg_maxs)
-    plot_func(years, 'Sep-Nov', STATION_NAME, autumn_xticks, autumn_avg_mins,
-              autumn_avg_maxs, autumn_mavg_mins, autumn_mavg_maxs)
-    plot_func(years, 'Dec-Feb', STATION_NAME, winter_xticks, winter_avg_mins,
-              winter_avg_maxs, winter_mavg_mins, winter_mavg_maxs)
+    plot_func(years, 'Mar-May', STATION_NAME, spring_xticks, spring_cmpt_mins,
+              spring_cmpt_maxs, spring_mavg_mins, spring_mavg_maxs)
+    plot_func(years, 'Jun-Aug', STATION_NAME, summer_xticks, summer_cmpt_mins,
+              summer_cmpt_maxs, summer_mavg_mins, summer_mavg_maxs)
+    plot_func(years, 'Sep-Nov', STATION_NAME, autumn_xticks, autumn_cmpt_mins,
+              autumn_cmpt_maxs, autumn_mavg_mins, autumn_mavg_maxs)
+    plot_func(years, 'Dec-Feb', STATION_NAME, winter_xticks, winter_cmpt_mins,
+              winter_cmpt_maxs, winter_mavg_mins, winter_mavg_maxs)

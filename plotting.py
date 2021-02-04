@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import math
 
 def plot_season_avg(years, period, station_name, xticks, avg_mins, avg_maxs,
-                mavg_mins, mavg_maxs):
+                    mavg_mins, mavg_maxs):
     title = 'Average of min/max temperature-values over ' + \
             r'$\bf{' + period + '}$' + ' for every year (' + \
             r'$\bf{' + station_name + '}$' + ')'
@@ -40,17 +40,17 @@ def plot_season_avg(years, period, station_name, xticks, avg_mins, avg_maxs,
     # show
     plt.show()
 
-def plot_season_swing(years, period, station_name, xticks, avg_mins, avg_maxs,
-                mavg_mins, mavg_maxs):
+def plot_season_swing(years, period, station_name, xticks, swng_mins, swng_maxs,
+                      mavg_mins, mavg_maxs):
     title = 'Daily variability of min/max temperature-values over ' + \
             r'$\bf{' + period + '}$' + ' for every year (' + \
             r'$\bf{' + station_name + '}$' + ')'
     xwidth = 0.3
     # plot bars and moving-avg
     plt.figure()
-    plt.bar(years, avg_mins, xwidth, color='blue',
+    plt.bar(years, swng_mins, xwidth, color='blue',
             label='variability-index of min')
-    plt.bar([y + xwidth for y in years], avg_maxs, xwidth, color='red',
+    plt.bar([y + xwidth for y in years], swng_maxs, xwidth, color='red',
             label='variability-index of max')
     plt.plot(years, mavg_mins, color='deepskyblue',
              label='moving-avg of min variability')
@@ -58,7 +58,7 @@ def plot_season_swing(years, period, station_name, xticks, avg_mins, avg_maxs,
              label='moving-avg of max variability')
     # setup x/y axis, title and labels
     abs_min = 0
-    abs_max = np.nanmax([np.nanmax(avg_mins), np.nanmax(avg_maxs)]) + 0.01
+    abs_max = np.nanmax([np.nanmax(swng_mins), np.nanmax(swng_maxs)]) + 0.01
     plt.xticks([y + xwidth/2 for y in years], xticks, rotation=90)
     plt.xlabel('Year')
     plt.ylim(bottom=abs_min)
