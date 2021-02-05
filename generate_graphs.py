@@ -20,7 +20,7 @@ STATION_NAME = check_output(['grep', STATION_KEY, STATIONS_DB]).split()[2]
 DATA_FILE = os.path.join(ROOT_DIR, 'data', STATION_ID + '.full')
 MAW_LEN = 5 # moving average window length
 
-if __name__ == "__main__":
+def main():
     # read data-frame
     df = get_data_frame(DATA_FILE)
 
@@ -31,13 +31,13 @@ if __name__ == "__main__":
     # for every season, build date prefixes
     spring_pref, summer_pref, autumn_pref, winter_pref = date_prefixes(df, years)
 
-    # for every season, get pandas-series of min and max temps
+    # for every season, get min and max temps -> one panda-series for every year
     spring_tmins, spring_tmaxs = get_t_min_max(df, years, spring_pref)
     summer_tmins, summer_tmaxs = get_t_min_max(df, years, summer_pref)
     autumn_tmins, autumn_tmaxs = get_t_min_max(df, years, autumn_pref)
     winter_tmins, winter_tmaxs = get_t_min_max(df, years, winter_pref)
 
-    # compute value for every serie -> one value for every year
+    # compute desired value for every serie -> one value for every year
     compute_func = swing if PLOT_VAR else np.mean
     spring_cmpt_mins = compute_season_value(compute_func, spring_tmins)
     summer_cmpt_mins = compute_season_value(compute_func, summer_tmins)
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     autumn_cmpt_maxs = compute_season_value(compute_func, autumn_tmaxs)
     winter_cmpt_maxs = compute_season_value(compute_func, winter_tmaxs)
 
-    # calculate moving-average of previous arrays
+    # calculate moving-average of previous computed arrays
     spring_mavg_mins = moving_average(spring_cmpt_mins, MAW_LEN)
     summer_mavg_mins = moving_average(summer_cmpt_mins, MAW_LEN)
     autumn_mavg_mins = moving_average(autumn_cmpt_mins, MAW_LEN)
@@ -74,3 +74,6 @@ if __name__ == "__main__":
               autumn_cmpt_maxs, autumn_mavg_mins, autumn_mavg_maxs)
     plot_func(years, 'Dec-Feb', STATION_NAME, winter_xticks, winter_cmpt_mins,
               winter_cmpt_maxs, winter_mavg_mins, winter_mavg_maxs)
+
+if __name__ == "__main__":
+    main()

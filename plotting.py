@@ -49,13 +49,13 @@ def plot_season_swing(years, period, station_name, xticks, swng_mins, swng_maxs,
     # plot bars and moving-avg
     plt.figure()
     plt.bar(years, swng_mins, xwidth, color='blue',
-            label='variability-index of min')
+            label='variability-index of min temps')
     plt.bar([y + xwidth for y in years], swng_maxs, xwidth, color='red',
-            label='variability-index of max')
+            label='variability-index of max temps')
     plt.plot(years, mavg_mins, color='deepskyblue',
-             label='moving-avg of min variability')
+             label='moving-avg of min-temps variability')
     plt.plot([y + xwidth for y in years], mavg_maxs, color='magenta',
-             label='moving-avg of max variability')
+             label='moving-avg of max-temps variability')
     # setup x/y axis, title and labels
     abs_min = 0
     abs_max = np.nanmax([np.nanmax(swng_mins), np.nanmax(swng_maxs)]) + 0.01
