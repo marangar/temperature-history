@@ -13,6 +13,7 @@ from db import get_data_frame, get_t_min_max, get_years
 
 PLOT_VAR = os.getenv('PLOT_VAR')
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+OUT_DIR = os.getenv('OUT_DIR', 'output')
 STATIONS_DB = os.path.join(ROOT_DIR, 'data', 'isd-history.txt')
 STATION_ID = os.getenv('STATION_ID', '160800-99999')
 STATION_KEY = STATION_ID.replace('-', ' ')
@@ -67,13 +68,17 @@ def main():
     # plot
     plot_func = plot_season_swing if PLOT_VAR else plot_season_avg
     plot_func(years, 'Mar-May', STATION_NAME, spring_xticks, spring_cmpt_mins,
-              spring_cmpt_maxs, spring_mavg_mins, spring_mavg_maxs)
+              spring_cmpt_maxs, spring_mavg_mins, spring_mavg_maxs,
+              os.path.join(OUT_DIR, "spring.svg"))
     plot_func(years, 'Jun-Aug', STATION_NAME, summer_xticks, summer_cmpt_mins,
-              summer_cmpt_maxs, summer_mavg_mins, summer_mavg_maxs)
+              summer_cmpt_maxs, summer_mavg_mins, summer_mavg_maxs,
+              os.path.join(OUT_DIR, "summer.svg"))
     plot_func(years, 'Sep-Nov', STATION_NAME, autumn_xticks, autumn_cmpt_mins,
-              autumn_cmpt_maxs, autumn_mavg_mins, autumn_mavg_maxs)
+              autumn_cmpt_maxs, autumn_mavg_mins, autumn_mavg_maxs,
+              os.path.join(OUT_DIR, "autumn.svg"))
     plot_func(years, 'Dec-Feb', STATION_NAME, winter_xticks, winter_cmpt_mins,
-              winter_cmpt_maxs, winter_mavg_mins, winter_mavg_maxs)
+              winter_cmpt_maxs, winter_mavg_mins, winter_mavg_maxs,
+              os.path.join(OUT_DIR, "winter.svg"))
 
 if __name__ == "__main__":
     main()

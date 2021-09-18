@@ -4,13 +4,13 @@ import matplotlib.pyplot as plt
 import math
 
 def plot_season_avg(years, period, station_name, xticks, avg_mins, avg_maxs,
-                    mavg_mins, mavg_maxs):
+                    mavg_mins, mavg_maxs, out_svg_file=None):
     title = 'Average of min/max temperature-values over ' + \
             r'$\bf{' + period + '}$' + ' for every year (' + \
             r'$\bf{' + station_name + '}$' + ')'
     xwidth = 0.3
     # plot bars and moving-avg
-    plt.figure()
+    plt.figure(figsize=(11,6))
     plt.bar(years, avg_mins, xwidth, color='blue',
             label='avg of min')
     plt.bar([y + xwidth for y in years], avg_maxs, xwidth, color='red',
@@ -38,7 +38,10 @@ def plot_season_avg(years, period, station_name, xticks, avg_mins, avg_maxs,
     plt.axhspan(avg_avg_min, avg_avg_min + 2, facecolor='green', alpha=0.2)
     plt.axhspan(avg_avg_min - 2 , avg_avg_min, facecolor='blue', alpha=0.2)
     # show
-    plt.show()
+    if not out_svg_file:
+        plt.show()
+    else:
+        plt.savefig(out_svg_file, format="svg", bbox_inches='tight')
 
 def plot_season_swing(years, period, station_name, xticks, swng_mins, swng_maxs,
                       mavg_mins, mavg_maxs):
