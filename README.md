@@ -17,7 +17,7 @@ find desired station from `data/isd-history.txt` (default `160800-99999`, MILANO
 
 initialize data (from 1951):
 ```
-STATION_ID=160800-99999 data/init_data.py
+STATION_ID=160800-99999 data/init_data.sh
 ```
 
 update data:
