@@ -44,13 +44,13 @@ def plot_season_avg(years, period, station_name, xticks, avg_mins, avg_maxs,
         plt.savefig(out_svg_file, format="svg", bbox_inches='tight')
 
 def plot_season_swing(years, period, station_name, xticks, swng_mins, swng_maxs,
-                      mavg_mins, mavg_maxs):
+                      mavg_mins, mavg_maxs, out_svg_file=None):
     title = 'Daily variability of min/max temperature-values over ' + \
             r'$\bf{' + period + '}$' + ' for every year (' + \
             r'$\bf{' + station_name + '}$' + ')'
     xwidth = 0.3
     # plot bars and moving-avg
-    plt.figure()
+    plt.figure(figsize=(11,6))
     plt.bar(years, swng_mins, xwidth, color='blue',
             label='variability-index of min temps')
     plt.bar([y + xwidth for y in years], swng_maxs, xwidth, color='red',
@@ -71,4 +71,7 @@ def plot_season_swing(years, period, station_name, xticks, swng_mins, swng_maxs,
     plt.legend()
     plt.grid()
     # show
-    plt.show()
+    if not out_svg_file:
+        plt.show()
+    else:
+        plt.savefig(out_svg_file, format="svg", bbox_inches='tight')
