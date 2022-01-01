@@ -11,7 +11,7 @@ from plotting import plot_season_avg, plot_season_swing
 from compute import swing, compute_season_value, moving_average
 from db import get_data_frame, get_t_min_max, get_years
 
-PLOT_VAR = int(os.getenv('PLOT_VAR'))
+PLOT_VAR = int(os.getenv('PLOT_VAR', default=0))
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.getenv('OUT_DIR', 'output')
 STATIONS_DB = os.path.join(ROOT_DIR, 'data', 'isd-history.txt')
