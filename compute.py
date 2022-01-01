@@ -2,19 +2,25 @@ from __future__ import absolute_import
 import numpy as np
 from utils import f2c, valid_elements, replace_nan
 
-def compute_season_value(compute_func, season_temps):
-    return np.array([compute_func(f2c(valid_elements(temps)))
+def compute_season_value(compute_func, season_temps, **kwargs):
+    return np.array([compute_func(f2c(valid_elements(temps)), **kwargs)
                      for temps in season_temps])
 
 def moving_average(cmpt_values, maw_len):
     return smooth(replace_nan(cmpt_values), maw_len, 'flat')
 
-def swing(temps):
+def swing(temps, nr_days=1):
+    """ compute swing (variability index) of input temperature array.
+        variability index is calculated as the spectral centroid of the 'temps' array.
+        temperatures are first averaged in groups of 'nr_days' days.
+    """
     days = len(temps)
     if days == 0:
         return np.nan
-    spectrum = np.abs(np.fft.rfft(temps))
-    freq = np.fft.rfftfreq(days)
+    resh_temps = temps[: len(temps) // nr_days * nr_days].values
+    resh_temps = np.mean(resh_temps.reshape((-1, nr_days)), axis=1)
+    spectrum = np.abs(np.fft.rfft(resh_temps))
+    freq = np.fft.rfftfreq(len(resh_temps))
     return np.average(freq, weights=spectrum)
 
 def smooth(x, window_len=11, window='hanning'):

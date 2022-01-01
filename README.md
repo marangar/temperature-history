@@ -31,7 +31,7 @@ show average temperature history for different seasons:
 STATION_ID=160800-99999 OUT_DIR=output ./generate_graphs.py
 ```
 
-show history of temperature-swing index for different seasons:
+show history of 1-day temperature swing index for different seasons:
 ```
-PLOT_VAR=y STATION_ID=160800-99999 OUT_DIR=output ./generate_graphs.py
+PLOT_VAR=1 STATION_ID=160800-99999 OUT_DIR=output ./generate_graphs.py
 ```
