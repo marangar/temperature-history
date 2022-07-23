@@ -35,3 +35,6 @@ show history of 1-day temperature swing index for different seasons:
 ```
 PLOT_VAR=1 STATION_ID=160800-99999 OUT_DIR=output ./generate_graphs.py
 ```
+
+## example
+something like [this](https://marangar.github.io/temperature-history-site) can be obtained
