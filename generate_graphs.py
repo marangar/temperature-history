@@ -17,7 +17,8 @@ OUT_DIR = os.getenv('OUT_DIR', 'output')
 STATIONS_DB = os.path.join(ROOT_DIR, 'data', 'isd-history.txt')
 STATION_ID = os.getenv('STATION_ID', '160800-99999')
 STATION_KEY = STATION_ID.replace('-', ' ')
-STATION_NAME = check_output(['grep', STATION_KEY, STATIONS_DB]).split()[2]
+STATION_NAME = check_output(['grep', STATION_KEY, STATIONS_DB],
+                            universal_newlines=True).split()[2]
 DATA_FILE = os.path.join(ROOT_DIR, 'data', STATION_ID + '.full')
 MAW_LEN = 5 # moving average window length
 
