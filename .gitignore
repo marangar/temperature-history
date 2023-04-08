@@ -4,4 +4,3 @@ venv
 venv3
 data/*.full
 .token
-output
